@@ -7,7 +7,7 @@ namespace ApiTransferBank.Data
     {
         public ContextoBanco(DbContextOptions<ContextoBanco> options) : base(options) { }
 
-        public DbSet<Cuenta> Cuentas { get; set; }
+        public DbSet<nuevaCuenta> Cuentas { get; set; }
         public DbSet<Transferencia> Transferencias { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

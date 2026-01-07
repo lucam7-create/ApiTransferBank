@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using ApiTransferBank.DTOs;
-using ApiTransferBank.Service;
+using ApiTransferBank.Interface;
 
 namespace ApiTransferBank.Controllers
 {

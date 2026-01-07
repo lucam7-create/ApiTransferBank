@@ -8,6 +8,10 @@ using System.Text;
 
 namespace ApiTransferBank.Controllers
 {
+    /// <summary>
+    /// Controlador encargado de gestionar la autenticación de usuarios 
+    /// y la generación de tokens de seguridad JWT.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class AutenticacionController : ControllerBase
@@ -15,12 +19,27 @@ namespace ApiTransferBank.Controllers
         private readonly IRepositorioBancario _repo;
         private readonly IConfiguration _config;
 
+        /// <summary>
+        /// Inicializa una nueva instancia de <see cref="AutenticacionController"/>.
+        /// </summary>
+        /// <param name="repo">Repositorio para el acceso a datos bancarios.</param>
+        /// <param name="config">Configuración de la aplicación para obtener claves de seguridad.</param>
         public AutenticacionController(IRepositorioBancario repo, IConfiguration config)
         {
             _repo = repo;
             _config = config;
         }
 
+        /// <summary>
+        /// Autentica a un usuario y genera un token JWT si las credenciales son válidas.
+        /// </summary>
+        /// <param name="login">Objeto DTO que contiene el usuario y la contraseña.</param>
+        /// <returns>
+        /// Un objeto JSON con el token generado, el nombre del titular y el número de cuenta si tiene éxito; 
+        /// de lo contrario, devuelve un estado 401 Unauthorized.
+        /// </returns>
+        /// <response code="200">Devuelve el token de acceso para las peticiones subsecuentes.</response>
+        /// <response code="401">Si las credenciales proporcionadas son incorrectas.</response>
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] SolicitudLogin login)
         {
@@ -37,7 +56,7 @@ namespace ApiTransferBank.Controllers
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    // AQUÍ ESTABA EL ERROR: Cambiamos .Id por .NumeroCuenta
+                    // Se utiliza el NumeroCuenta como identificador único en los Claims
                     new Claim(ClaimTypes.NameIdentifier, cuenta.NumeroCuenta),
                     new Claim(ClaimTypes.Name, cuenta.Titular)
                 }),
@@ -52,7 +71,7 @@ namespace ApiTransferBank.Controllers
             {
                 token = tokenHandler.WriteToken(token),
                 titular = cuenta.Titular,
-                numeroCuenta = cuenta.NumeroCuenta // Devolvemos el número de cuenta también
+                numeroCuenta = cuenta.NumeroCuenta
             });
         }
     }
